@@ -25,6 +25,36 @@ drivetransformer/
 venv/
 env/
 ENV/
+.env/
+
+# Model Checkpoints and Weights (大型文件不提交)
+*.pth
+*.pt
+*.ckpt
+*.bin
+ckpts/
+checkpoints/
+models/
+*.onnx
+
+# Training Logs and Outputs
+outputs/
+results/
+experiments/
+tensorboard/
+*.tensorboard
+
+# Data Files (数据集通常太大)
+data/
+*.npy
+*.pkl
+*.h5
+*.hdf5
+
+# CARLA/Bench2Drive specific
+leaderboard/data/
+*.bag
+*.pcd
 
 # IDE
 .vscode/
