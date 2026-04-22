@@ -52,6 +52,7 @@ data/
 *.hdf5
 
 # CARLA/Bench2Drive specific
+carla/
 leaderboard/data/
 *.bag
 *.pcd

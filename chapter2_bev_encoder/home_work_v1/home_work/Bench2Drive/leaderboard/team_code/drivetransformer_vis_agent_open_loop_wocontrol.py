@@ -17,7 +17,7 @@ from PIL import Image
 from torchvision import transforms as T
 
 import sys
-sys.path.append("/home/slxy/zca/backup/Bench2Drive")
+sys.path.append("/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work")
 
 from DriveTransformer.team_code.pid_controller import DecouplePIDController
 from leaderboard.autoagents import autonomous_agent
@@ -104,15 +104,21 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
                     print(_module_path)
                     plg_lib = importlib.import_module(_module_path)  
         self.model = build_model(cfg.model, train_cfg=cfg.get('train_cfg'), test_cfg=cfg.get('test_cfg'))
-        
+                
         if self.ckpt_path != "None":
-            ckpt = torch.load(self.ckpt_path)
+            # 使用 map_location='cpu' 先在 CPU 上加载，减少 GPU 显存占用
+            ckpt = torch.load(self.ckpt_path, map_location='cpu')
             ckpt = ckpt["state_dict"]
             new_state_dict = OrderedDict()
             for key, value in ckpt.items():
                 new_key = key.replace("model.","").replace("._orig_mod", "")
                 new_state_dict[new_key] = value
             print(self.model.load_state_dict(new_state_dict, strict = False))
+            # 清理不再需要的变量，释放内存
+            del ckpt, new_state_dict
+            import gc
+            gc.collect()
+                
         wrap_fp16_model(self.model)
         self.model.to(self.device)
         self.model.eval()

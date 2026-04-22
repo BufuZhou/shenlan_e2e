@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # 设置环境变量
-export CARLA_ROOT="/home/slxy/zca/code/drivetransformer_private/carla"
-export CARLA_SERVER="/home/slxy/zca/code/drivetransformer_private/carla/CarlaUE4.sh"
-export SCENARIO_RUNNER_ROOT="/home/slxy/zca/code/BenchDrive/scenario_runner"
-export PYTHONPATH="/home/slxy/zca/code/drivetransformer_private/carla/PythonAPI:/home/slxy/zca/code/drivetransformer_private/carla/PythonAPI/carla:/home/slxy/zca/code/drivetransformer_private/carla/PythonAPI/carla/dist/carla-0.9.15-py3.7-linux-x86_64.egg:/home/slxy/zca/code/BenchDrive:/home/slxy/zca/code/BenchDrive/leaderboard:/home/slxy/zca/code/BenchDrive/leaderboard/team_code:/home/slxy/zca/code/BenchDrive:/home/slxy/zca/code/BenchDrive/scenario_runner"
+export CARLA_ROOT="/home/lifanjie/shenlan_e2e/carla"
+export CARLA_SERVER="/home/lifanjie/shenlan_e2e/carla/CarlaUE4.sh"
+export SCENARIO_RUNNER_ROOT="/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/scenario_runner"
+export PYTHONPATH="/home/lifanjie/shenlan_e2e/carla/PythonAPI:/home/lifanjie/shenlan_e2e/carla/PythonAPI/carla:/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive:/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard:/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard/team_code:/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/adzoo:/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/scenario_runner"
 
 # Python路径
-PYTHON="/home/slxy/.miniconda3/envs/drivetransformer/bin/python"
+PYTHON="/home/lifanjie/shenlan_e2e/drivetransformer/bin/python"
 PROGRAM="leaderboard/leaderboard/leaderboard_evaluator.py"
 
-cd /home/slxy/zca/code/Bench2Drive
+cd /home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive
 
 # 创建输出目录
 mkdir -p DriveTransformer_b2d_open_loop

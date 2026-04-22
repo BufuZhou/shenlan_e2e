@@ -25,10 +25,9 @@ import signal
 
 import sys
 # print(sys.path)
-sys.path.append("/home/slxy/zca/code/Bench2Drive/scenario_runner")
-sys.path.append("/home/slxy/zca/code/Bench2Drive/leaderboard")
-# sys.path.append("/home/slxy/zca/code/drivetransformer_private/carla/PythonAPI/carla")
-# sys.path.append("/home/slxy/zca/code/Bench2Drive/scenario_runner/srunner/tests/carla_mocks")
+sys.path.append("/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/scenario_runner")
+sys.path.append("/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard")
+# sys.path.append("/home/lifanjie/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/scenario_runner/srunner/tests/carla_mocks")
 # print(sys.path)
 from srunner.scenariomanager.carla_data_provider import *
 from srunner.scenariomanager.timer import GameTime
