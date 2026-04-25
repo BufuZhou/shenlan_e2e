@@ -21,7 +21,8 @@ wheels/
 *.egg
 
 # Virtual Environment
-drivetransformer/
+# Exception: allow adzoo's drivetransformer
+!chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/adzoo/drivetransformer/
 venv/
 env/
 ENV/
