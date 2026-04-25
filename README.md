@@ -531,6 +531,11 @@ pip list | grep -E "torch|mmcv|numpy|numba"
 ---
 
 **最后更新**: 2026-04-11
+
+ckpts:
+
 https://drive.google.com/file/d/1wAXFWfjJm0cmP_pmgTkwxTUEs6Zu5j6i/view
 
 https://huggingface.co/rethinklab/Bench2DriveZoo/blob/main/resnet50-19c8e357.pth
+
+conda activate drivetransformer

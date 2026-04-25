@@ -1,86 +1,15 @@
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# Virtual Environment
-# Exception: allow adzoo's drivetransformer
-!chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/adzoo/drivetransformer/
-venv/
-env/
-ENV/
-.env/
-
-# Model Checkpoints and Weights (大型文件不提交)
-*.pth
-*.pt
-*.ckpt
-*.bin
-ckpts/
-checkpoints/
-models/
-*.onnx
-
-# Training Logs and Outputs
-outputs/
-results/
-experiments/
-tensorboard/
-*.tensorboard
-
-# Data Files (数据集通常太大)
-data/
-*.npy
-*.pkl
-*.h5
-*.hdf5
-
-# CARLA/Bench2Drive specific
+# CARLA (只忽略 CARLA 目录)
 carla/
-leaderboard/data/
-*.bag
-*.pcd
+build/
+ckpts/
+mmcv.egg-info/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Environment variables
-.env
-.env.local
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-logs/
-
-# Temporary files
-tmp/
-temp/
-*.tmp
+# Compiled extensions
+*.so
+*.dylib
+*.dll
