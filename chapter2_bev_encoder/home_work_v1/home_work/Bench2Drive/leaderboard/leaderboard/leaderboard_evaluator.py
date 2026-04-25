@@ -557,6 +557,13 @@ def main():
     parser.add_argument("--debug-checkpoint", type=str, default='./live_results.txt',
                         help="Path to checkpoint used for saving live results")
     parser.add_argument("--gpu-rank", type=int, default=0)
+    
+    # 可视化相关选项
+    parser.add_argument('--enable-visualization', action='store_true',
+                        help='Enable saving visualization frames (RGB and BEV with detection boxes)')
+    parser.add_argument('--visualization-save-path', type=str, default=None,
+                        help='Path to save visualization results (default: based on agent config)')
+    
     arguments = parser.parse_args()
 
     statistics_manager = StatisticsManager(arguments.checkpoint, arguments.debug_checkpoint)

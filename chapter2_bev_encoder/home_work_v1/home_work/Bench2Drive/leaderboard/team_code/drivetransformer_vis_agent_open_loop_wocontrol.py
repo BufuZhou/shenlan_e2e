@@ -695,6 +695,10 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
         json.dump(self.pid_metadata, outfile, indent=4)
         outfile.close()
         
+        # 保存检测结果到JSON文件（用于后处理）
+        if result is not None and len(result) > 0:
+            self._save_detections(frame, result)
+        
     def draw_traj(self, traj, raw_img,canvas_size=(900,1600),thickness=3,is_ego=True,hue_start=120,hue_end=80):
         line = traj
         lidar2img_rt = self.lidar2img['CAM_FRONT']
@@ -1175,4 +1179,82 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
         except Exception as e:
             print(f"Error extracting point A to B: {e}")
             return None
+    
+    def _save_detections(self, frame_id, result):
+        """
+        保存检测结果到JSON文件
+        
+        Args:
+            frame_id: 帧ID
+            result: 模型检测结果
+        """
+        # 创建detections文件路径
+        detections_file = self.save_path / 'detections.json'
+        
+        # 如果文件存在，加载现有数据
+        if detections_file.exists():
+            with open(detections_file, 'r') as f:
+                all_detections = json.load(f)
+        else:
+            all_detections = []
+        
+        # 提取当前帧的检测结果
+        frame_detection = {
+            "frame_id": frame_id,
+            "timestamp": frame_id * 0.05,  # 20fps
+            "detections": []
+        }
+        
+        if len(result) > 0 and 'boxes_3d' in result[0]:
+            boxes_3d = result[0]['boxes_3d']
+            scores = result[0]['scores_3d']
+            labels = result[0]['labels_3d']
+            
+            # 转换为numpy
+            if hasattr(boxes_3d, 'tensor'):
+                boxes_np = boxes_3d.tensor.cpu().numpy()
+            else:
+                boxes_np = boxes_3d.cpu().numpy() if hasattr(boxes_3d, 'cpu') else boxes_3d
+            
+            scores_np = scores.cpu().numpy() if hasattr(scores, 'cpu') else scores
+            labels_np = labels.cpu().numpy() if hasattr(labels, 'cpu') else labels
+            
+            # 类别名称映射
+            class_names = {
+                0: 'car',
+                1: 'truck',
+                2: 'construction_vehicle',
+                3: 'bus',
+                4: 'trailer',
+                5: 'barrier',
+                6: 'motorcycle',
+                7: 'bicycle',
+                8: 'pedestrian',
+                9: 'traffic_cone'
+            }
+            
+            # 保存每个检测框
+            for i in range(len(boxes_np)):
+                box = boxes_np[i]
+                score = float(scores_np[i])
+                label = int(labels_np[i])
+                
+                detection = {
+                    "bbox_3d": {
+                        "center": [float(box[0]), float(box[1]), float(box[2])],
+                        "size": [float(box[3]), float(box[4]), float(box[5])],
+                        "rotation": float(box[6])
+                    },
+                    "score": score,
+                    "label": label,
+                    "class_name": class_names.get(label, "unknown")
+                }
+                frame_detection["detections"].append(detection)
+        
+        # 添加到列表
+        all_detections.append(frame_detection)
+        
+        # 保存回文件
+        with open(detections_file, 'w') as f:
+            json.dump(all_detections, f, indent=2)
  

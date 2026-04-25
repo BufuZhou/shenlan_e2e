@@ -539,3 +539,16 @@ https://drive.google.com/file/d/1wAXFWfjJm0cmP_pmgTkwxTUEs6Zu5j6i/view
 https://huggingface.co/rethinklab/Bench2DriveZoo/blob/main/resnet50-19c8e357.pth
 
 conda activate drivetransformer
+
+# 调试用，实际仿真用不到
+./CarlaUE4.sh -carla-rpc-port=30002 -vulkan -RenderOffScreen -nosound
+
+(drivetransformer) root@9gpu-com:~/project/shenlan_e2e# python3 carla_record_video.py
+
+./chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/start_eval_open_loop_wocontrol.sh
+
+carla 程序
+ps aux | grep -i carla | grep -v grep
+
+清除carla
+bash /root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/tools/clean_carla.sh
