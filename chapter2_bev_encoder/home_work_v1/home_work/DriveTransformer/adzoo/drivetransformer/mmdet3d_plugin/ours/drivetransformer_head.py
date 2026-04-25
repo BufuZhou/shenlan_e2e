@@ -289,13 +289,16 @@ class DriveTransformerlHead(BaseModule):
         # self.agent_query shape:[self.agent_num_query, self.embed_dims]
         # self.agent_reference_points shape:[self.agent_num_query, 3]
 
-        # 替换此处代码
-        self.agent_query = nn.Embedding(self.agent_num_query, self.embed_dims)
-        self.agent_reference_points = nn.Embedding(self.agent_num_query, 3)
+        # 使用可学习的嵌入参数（替换原有的随机初始化）
+        self.agent_query = nn.Parameter(torch.randn(self.agent_num_query, self.embed_dims))
+        self.agent_reference_points = nn.Parameter(torch.rand(self.agent_num_query, 3))
+        
+        # 初始化参考点在一个合理的范围内（例如 [-1, 1]）
+        nn.init.uniform_(self.agent_reference_points, -1, 1)
+        # 初始化查询特征
+        nn.init.xavier_uniform_(self.agent_query)
 
         ###################################################################
-        self.agent_reference_points.requires_grad_(False)
-        self.agent_query.requires_grad_(False)
         
         self.agent_cls_embedding = nn.Sequential(
             nn.Linear(self.num_classes, self.embed_dims),
@@ -518,7 +521,7 @@ class DriveTransformerlHead(BaseModule):
         self.ego_lcf_encoder.apply(self.xavier_uniform_linear)
         self.img_position_encoder.apply(self.xavier_uniform_linear)
         self.apply(self.init_ln)
-        num_grid_per_dim_agent = int(np.sqrt(self.agent_reference_points.weight.shape[0]))
+        num_grid_per_dim_agent = int(np.sqrt(self.agent_reference_points.shape[0]))
         ###################################################################
         # project-1
         # TODO-2 
@@ -528,16 +531,19 @@ class DriveTransformerlHead(BaseModule):
         # index="xy"
         # x, y = meshgrid()
         # 替换此处代码
+        # 生成规则网格坐标
         x = torch.linspace(self.pc_range[0], self.pc_range[3], num_grid_per_dim_agent)
         y = torch.linspace(self.pc_range[1], self.pc_range[4], num_grid_per_dim_agent)
         x, y = torch.meshgrid(x, y, indexing='xy')
+        x = x.to(device=self.agent_reference_points.device)
+        y = y.to(device=self.agent_reference_points.device)
         
         ###################################################################
         with torch.no_grad():
-            self.agent_reference_points.weight[..., 0] = x.flatten()
-            self.agent_reference_points.weight[..., 1] = y.flatten()
-            self.agent_reference_points.weight[..., 2] = 0.0
-        nn.init.constant_(self.agent_query.weight, 0)
+            self.agent_reference_points[..., 0] = x.flatten()
+            self.agent_reference_points[..., 1] = y.flatten()
+            self.agent_reference_points[..., 2] = 0.0
+        nn.init.constant_(self.agent_query, 0)
         
         num_grid_per_dim_map = int(np.sqrt(self.map_reference_points.weight.shape[0]))
         with torch.no_grad():
@@ -571,12 +577,12 @@ class DriveTransformerlHead(BaseModule):
         ## Det & Motion
         ###################################################################
         # project-1
-        # TODO-3 get agent_query and agent_reference_points from self.agent_query.weight and self.agent_reference_points.weight
-        # agent_query = nn.Embedding.weight (N, D) -> (bs, N, D) .to(dtype)
-        # agent_reference_points = nn.Embedding.weight (N, D) -> (bs, N, D)
+        # TODO-3 get agent_query and agent_reference_points from self.agent_query and self.agent_reference_points
+        # agent_query = nn.Parameter (N, D) -> (bs, N, D) .to(dtype)
+        # agent_reference_points = nn.Parameter (N, D) -> (bs, N, D)
         # 替换此处代码
-        agent_query = self.agent_query.weight.unsqueeze(0).repeat(bs, 1, 1).to(dtype)
-        agent_reference_points = self.agent_reference_points.weight.unsqueeze(0).repeat(bs, 1, 1).to(dtype)
+        agent_query = self.agent_query.unsqueeze(0).repeat(bs, 1, 1).to(dtype)
+        agent_reference_points = self.agent_reference_points.unsqueeze(0).repeat(bs, 1, 1).to(dtype)
         
         ###################################################################
         ## Online Mapping
