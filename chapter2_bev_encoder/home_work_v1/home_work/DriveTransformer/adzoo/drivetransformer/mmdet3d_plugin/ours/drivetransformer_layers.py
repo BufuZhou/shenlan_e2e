@@ -712,22 +712,25 @@ class DriveTransformerDecoderLayer(BaseModule):
                 # project-1
                 # 允许agent看agent
                 # 替换此处代码
-                pass
+                mask[agent_range, agent_range] = False
                 # 允许map看agent, map
                 # 替换此处代码
-                pass
+                mask[map_range, agent_range] = False
+                mask[map_range, map_range] = False
                 ###############################################################
                 # project-2
                 # 允许agent看agent, map
                 # 替换此处代码
-                pass
+                mask[agent_range, map_range] = False
                 # 允许map看agent, map
                 # 替换此处代码
+                # (已在project-1中设置)
                 pass
                 ###############################################################
                 # project-3
                 # 允许agent, map, ego互相看
                 # 替换此处代码
+                # (ego已在第733行设置为可见所有)
                 pass
                 ###############################################################
                 mask[ego_range, :] = False
