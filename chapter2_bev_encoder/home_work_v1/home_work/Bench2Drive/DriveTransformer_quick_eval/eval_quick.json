@@ -2,7 +2,7 @@
     "_checkpoint": {
         "global_record": {},
         "progress": [
-            1,
+            3,
             4
         ],
         "records": [
@@ -39,6 +39,78 @@
                     "route_length": 76.251,
                     "duration_game": 11.05,
                     "duration_system": 346.317
+                },
+                "town_name": "Town12"
+            },
+            {
+                "index": 1,
+                "route_id": "RouteScenario_27494_rep0",
+                "scenario_name": "BlockedIntersection_1",
+                "weather_id": "9",
+                "save_name": "RouteScenario_27494_rep0_Town04_BlockedIntersection_1_9_04_26_23_57_03",
+                "status": "Failed - Agent got blocked",
+                "num_infractions": 2,
+                "infractions": {
+                    "collisions_layout": [
+                        "Agent collided against object with type=static.pole and id=0 at (x=166.056, y=-237.289, z=0.064)"
+                    ],
+                    "collisions_pedestrian": [],
+                    "collisions_vehicle": [],
+                    "red_light": [],
+                    "stop_infraction": [],
+                    "outside_route_lanes": [],
+                    "min_speed_infractions": [],
+                    "yield_emergency_vehicle_infractions": [],
+                    "scenario_timeouts": [],
+                    "route_dev": [],
+                    "vehicle_blocked": [
+                        "Agent got blocked at (x=166.327, y=-237.215, z=0.071)"
+                    ],
+                    "route_timeout": []
+                },
+                "scores": {
+                    "score_route": 2.33,
+                    "score_penalty": 0.65,
+                    "score_composed": 1.5145
+                },
+                "meta": {
+                    "route_length": 86.177,
+                    "duration_game": 63.05,
+                    "duration_system": 1784.633
+                },
+                "town_name": "Town04"
+            },
+            {
+                "index": 2,
+                "route_id": "RouteScenario_17569_rep0",
+                "scenario_name": "SequentialLaneChange_1",
+                "weather_id": "18",
+                "save_name": "RouteScenario_17569_rep0_Town12_SequentialLaneChange_1_18_04_27_00_26_56",
+                "status": "Failed - Agent couldn't be set up",
+                "num_infractions": 0,
+                "infractions": {
+                    "collisions_layout": [],
+                    "collisions_pedestrian": [],
+                    "collisions_vehicle": [],
+                    "red_light": [],
+                    "stop_infraction": [],
+                    "outside_route_lanes": [],
+                    "min_speed_infractions": [],
+                    "yield_emergency_vehicle_infractions": [],
+                    "scenario_timeouts": [],
+                    "route_dev": [],
+                    "vehicle_blocked": [],
+                    "route_timeout": []
+                },
+                "scores": {
+                    "score_route": 0,
+                    "score_penalty": 1.0,
+                    "score_composed": 0.0
+                },
+                "meta": {
+                    "route_length": 115.358,
+                    "duration_game": 0.0,
+                    "duration_system": 0.0
                 },
                 "town_name": "Town12"
             }
