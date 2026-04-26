@@ -582,7 +582,7 @@ class DriveTransformerlHead(BaseModule):
         # TODO-4
         # map_query = nn.Embedding.weight (N, D) -> (bs, N, D)
         # map_reference_points = nn.Embedding.weight (N, D) -> (bs, N, D)
-        map_query = self.map_query.weight.unsqueeze(0).expand(bs, -1, -1)        
+        map_query = self.map_query.weight.to(dtype).unsqueeze(0).expand(bs, -1, -1)
         map_reference_points = self.map_reference_points.weight.unsqueeze(0).repeat(bs, 1, 1)
         ## Temporal Alignment
         agent_query, map_query, \

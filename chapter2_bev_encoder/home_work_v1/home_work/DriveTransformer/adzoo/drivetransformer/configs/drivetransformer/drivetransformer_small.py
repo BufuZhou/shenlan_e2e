@@ -2,8 +2,7 @@ _base_ = [
     '../datasets/custom_nus-3d.py',
     '../_base_/default_runtime.py'
 ]
-# #
-# #backbone_norm_cfg = dict(type='LN', requires_grad=True)
+
 plugin = True
 plugin_dir = 'adzoo/drivetransformer/mmdet3d_plugin/'
 
@@ -17,11 +16,9 @@ img_norm_cfg = dict(
 
 NameMapping = {
     #=================vehicle=================
-    # bicycle
     'vehicle.bh.crossbike': 'bicycle',
     "vehicle.diamondback.century": 'bicycle',
     "vehicle.gazelle.omafiets": 'bicycle',
-    # car
     "vehicle.audi.etron": 'car',
     "vehicle.chevrolet.impala": 'car',
     "vehicle.dodge.charger_2020": 'car',
@@ -34,9 +31,7 @@ NameMapping = {
     "vehicle.ford.mustang": 'car',
     "vehicle.nissan.patrol_2021": 'car',
     "vehicle.audi.tt": 'car',
-    "vehicle.audi.etron": 'car',
     "vehicle.ford.crown": 'car',
-    "vehicle.ford.mustang": 'car',
     "vehicle.tesla.model3": 'car',
     "/Game/Carla/Static/Car/4Wheeled/ParkedVehicles/FordCrown/SM_FordCrown_parked.SM_FordCrown_parked": 'car',
     "/Game/Carla/Static/Car/4Wheeled/ParkedVehicles/Charger/SM_ChargerParked.SM_ChargerParked": 'car',
@@ -46,37 +41,22 @@ NameMapping = {
     "/Game/Carla/Static/Car/4Wheeled/ParkedVehicles/NissanPatrol2021/SM_NissanPatrol2021_parked.SM_NissanPatrol2021_parked": 'car',
     "/Game/Carla/Static/Car/4Wheeled/ParkedVehicles/TeslaM3/SM_TeslaM3_parked.SM_TeslaM3_parked": 'car',
     "/Game/Carla/Static/Car/4Wheeled/ParkedVehicles/VolkswagenT2/SM_VolkswagenT2_2021_Parked.SM_VolkswagenT2_2021_Parked": 'car',
-    # bus
-    # van
     "/Game/Carla/Static/Car/4Wheeled/ParkedVehicles/VolkswagenT2/SM_VolkswagenT2_2021_Parked.SM_VolkswagenT2_2021_Parked": "van",
     "vehicle.ford.ambulance": "van",
-    # truck
     "vehicle.carlamotors.firetruck": 'truck',
-    #=========================================
-
-    #=================traffic sign============
-    # traffic.speed_limit
     "traffic.speed_limit.30": 'traffic_sign',
     "traffic.speed_limit.40": 'traffic_sign',
     "traffic.speed_limit.50": 'traffic_sign',
     "traffic.speed_limit.60": 'traffic_sign',
     "traffic.speed_limit.90": 'traffic_sign',
     "traffic.speed_limit.120": 'traffic_sign',
-    
     "traffic.stop": 'traffic_sign',
     "traffic.yield": 'traffic_sign',
     "traffic.traffic_light": 'traffic_light',
-    #=========================================
-
-    #===================Construction===========
     "static.prop.warningconstruction" : 'traffic_cone',
     "static.prop.warningaccident": 'traffic_cone',
     "static.prop.trafficwarning": "traffic_cone",
-
-    #===================Construction===========
     "static.prop.constructioncone": 'traffic_cone',
-
-    #=================pedestrian==============
     "walker.pedestrian.0001": 'pedestrian',
     "walker.pedestrian.0003": 'pedestrian',
     "walker.pedestrian.0004": 'pedestrian',
@@ -104,36 +84,33 @@ NameMapping = {
     "walker.pedestrian.0042": 'pedestrian',
     "walker.pedestrian.0046": 'pedestrian',
     "walker.pedestrian.0047": 'pedestrian',
-
-    # ==========================================
     "static.prop.dirtdebris01": 'others',
     "static.prop.dirtdebris02": 'others',
 }
 
 collect_keys=['lidar2img', 'cam_intrinsic', 'cam_extrinsic','timestamp', 'ego_pose', 'ego_pose_inv', 'pad_shape', 'gt_traj_fut_classes', 'ego_fut_classes']
-# For nuScenes we usually do 10-class detection
 class_names = [
 'car','van','truck','bicycle','traffic_sign','traffic_cone','traffic_light','pedestrian','others'
 ]
 num_classes = len(class_names)
 
-# map has classes: divider, ped_crossing, boundary
 map_classes = ['Broken', 'Solid','SolidSolid','Center','TrafficLight','StopSign']
-
-map_fixed_ptsnum_per_gt_line = 20 # now only support fixed_pts > 0
+map_fixed_ptsnum_per_gt_line = 20
 map_fixed_ptsnum_per_pred_line = 20
 map_eval_use_same_gt_sample_num_flag = True
 map_num_classes = len(map_classes)
-agent_query_num_vec = 900
-agent_num_topk_sift = 900
-agent_num_propagated = 50
-map_query_num_vec = 100
-map_num_topk_sift = 100
-map_num_propagated = 50
-memory_len_frame = 10
+
+# 降低模型大小以减少显存占用
+agent_query_num_vec = 196  # 从 900 降低到 196 (14²)
+agent_num_topk_sift = 196  # 必须等于或小于 agent_query_num_vec
+agent_num_propagated = 20  # 从 50 降低到 20
+map_query_num_vec = 49     # 从 100 降低到 49 (7²)
+map_num_topk_sift = 50     # 从 100 降低到 50
+map_num_propagated = 20    # 从 50 降低到 20
+memory_len_frame = 5       # 从 10 降低到 5
 num_mode = 6
-num_gpus = 8  
-batch_size = 24
+num_gpus = 1               # 单 GPU 训练
+batch_size = 1             # 单卡训练
 num_iters_per_epoch = 200000 // (num_gpus * batch_size)
 
 data_aug_conf = {
@@ -154,10 +131,11 @@ input_modality = dict(
     use_map=False,
     use_external=True)
 
-_dim_ = 128
-queue_length = 1 # each sequence contains `queue_length` frames.
-total_epochs = 30
-dropout = 0.0
+# 降低特征维度
+_dim_ = 256  # 从 768 降低到 256
+total_epochs = 30  # 从 60 降低到 30
+dropout = 0.1
+extra_post_norm = True
 
 model = dict(
     type='DriveTransformer',
@@ -180,31 +158,27 @@ model = dict(
         add_extra_convs='on_output',
         num_outs=1,
         relu_before_extra_convs=True),
-    ## Model Size
     pts_bbox_head=dict(
         type='DriveTransformerlHead',
-        ## Model Size
         ego_lcf_feat_idx=[0,1,2,3,4,5,6,7,8],
         ego_command_dim=140,
         img_stride=32,
         embed_dims=_dim_,
         num_reg_fcs=2,
         num_cls_fcs=2,
-        agent_num_propagated=agent_num_propagated, ## Per Frame Per Type
-        map_num_propagated=map_num_propagated, ## Per Frame Per Type
+        agent_num_propagated=agent_num_propagated,
+        map_num_propagated=map_num_propagated,
         memory_len_frame=memory_len_frame,
-        ## Det & Pred
         agent_num_query=agent_query_num_vec,
         agent_num_query_sifted=agent_num_topk_sift,
         fut_mode=num_mode,
         fut_ego_mode=1,
         fut_ts=6,
-        fut_ego_fix_dist=True,  # predict ego trajetory in 
-        fut_ts_ego_fix_dist=20, # 20 points with interval of 1m
-        fut_ts_ego_fix_time=30, # 30 points with interval of 0.1s
+        fut_ego_fix_dist=True,
+        fut_ts_ego_fix_dist=20,
+        fut_ts_ego_fix_time=30,
         num_classes=num_classes,
         code_size=10,
-        ## Online Mapping
         map_num_query=map_query_num_vec,
         map_num_query_sifted=map_num_topk_sift,
         map_num_classes=map_num_classes,
@@ -216,18 +190,14 @@ model = dict(
         map_dir_interval=1,
         map_code_size=2,
         map_code_weights=[1.0, 1.0, 1.0, 1.0],
-        ## Optimization
         sync_cls_avg_factor=True,
         with_box_refine=True,
-        ## 3D PE
         LID=True,
         with_ego_pos=True,
         position_range=point_cloud_range,    
         depth_start=1,
         depth_step=0.8,
         depth_num=64,
-  
-        ## InitLayer
         agent_prep_decoder=dict(
             type='DriveTransformerPreDecoder',
             num_layers=1,
@@ -239,20 +209,23 @@ model = dict(
                         type='AttentionLayer',
                         embed_dims=_dim_,
                         head_dim=64,
-                        attn_drop=dropout),
+                        attn_drop=dropout,
+                        extra_post_norm=extra_post_norm),
                     dict(
                         type='AttentionLayer',
                         embed_dims=_dim_,
                         head_dim=64,
-                        attn_drop=dropout),
+                        attn_drop=dropout,
+                        extra_post_norm=extra_post_norm),
                     ],
                 ffn_cfgs=dict(
                     type="SwiGLULayer",
                     embed_dims=_dim_,
                     feedforward_channels=int(_dim_*4),
                     ffn_drop=dropout,
+                    extra_post_norm=extra_post_norm,
                 ),
-                with_cp=False,  ###use checkpoint to save memory
+                with_cp=False,
                 operation_order=('cross_attn', 'norm', 'self_attn', 'norm', 'ffn', 'norm'))),
         map_prep_decoder=dict(
             type='DriveTransformerPreDecoder',
@@ -265,28 +238,30 @@ model = dict(
                         type='AttentionLayer',
                         embed_dims=_dim_,
                         head_dim=64,
-                        attn_drop=dropout),
+                        attn_drop=dropout,
+                        extra_post_norm=extra_post_norm),
                     dict(
                         type='AttentionLayer',
                         embed_dims=_dim_,
                         head_dim=64,
-                        attn_drop=dropout),
+                        attn_drop=dropout,
+                        extra_post_norm=extra_post_norm),
                     ],
                 ffn_cfgs=dict(
                     type="SwiGLULayer",
                     embed_dims=_dim_,
                     feedforward_channels=int(_dim_*4),
                     ffn_drop=dropout,
+                    extra_post_norm=extra_post_norm
                 ),
-                with_cp=False, 
+                with_cp=False,
                 operation_order=('cross_attn', 'norm', 'self_attn', 'norm', 'ffn', 'norm'))),
-        ## Major Layer
         transformer=dict(
             type='DriveTransformerWrapper',
             embed_dims=_dim_,
             decoder=dict(
                 type='DriveTransformerDecoder',
-                num_layers=3,
+                num_layers=6,  # 从 12 降低到 6
                 fut_mode = num_mode,
                 agent_num_query = agent_num_topk_sift,
                 map_num_query = map_num_topk_sift,
@@ -304,38 +279,41 @@ model = dict(
                     map_pts_per_vec=map_fixed_ptsnum_per_pred_line,
                     feedforward_channels=int(_dim_*4),
                     ffn_dropout=dropout,
-                    with_cp=False, 
+                    with_cp=False,
                     attn_cfgs=[
                         dict(
                         type='AttentionLayer',
                         embed_dims=_dim_,
                         head_dim=64,
                         attn_drop=dropout,
-                        layer_scale=1e-2),
+                        layer_scale=1e-2,
+                        extra_post_norm=extra_post_norm),
                         dict(
                         type='AttentionLayer',
                         embed_dims=_dim_,
                         head_dim=64,
                         attn_drop=dropout,
-                        layer_scale=1e-2),
+                        layer_scale=1e-2,
+                        extra_post_norm=extra_post_norm),
                         dict(
                             type='AttentionLayer',
                             embed_dims=_dim_,
                             head_dim=64,
                             attn_drop=dropout,
-                            no_wq=True),
+                            no_wq=True,
+                            extra_post_norm=extra_post_norm),
                         ],
                     ffn_cfgs=dict(
                         type="SwiGLULayer",
                         embed_dims=_dim_,
                         feedforward_channels=int(_dim_*4),
                         ffn_drop=dropout,
+                        extra_post_norm=extra_post_norm,
                     ),
                     operation_order=('task_self_attn', 'norm', 'temporal_cross_attn', 'norm', 'sensor_cross_attn', 'norm',  'ffn', 'norm'),
                 ),
             ),
         ),
-        ## Det Loss
         bbox_coder=dict(
             type='CustomNMSFreeCoder',
             post_center_range=[-20, -35, -10.0, 20, 35, 10.0],
@@ -343,7 +321,6 @@ model = dict(
             max_num=100,
             voxel_size=voxel_size,
             num_classes=num_classes),
-        
         loss_cls=dict(
             type='FocalLoss',
             use_sigmoid=True,
@@ -351,7 +328,6 @@ model = dict(
             alpha=0.25,
             loss_weight=2.0),
         loss_bbox=dict(type='L1Loss', loss_weight=0.25),
-        ## Motion Loss
         loss_traj=dict(type='L1Loss', loss_weight=0.2),
         loss_traj_cls=dict(
             type='FocalLoss',
@@ -359,7 +335,6 @@ model = dict(
             gamma=2.0,
             alpha=0.5,
             loss_weight=0.2),
-        ## Online Mapping Loss
         map_bbox_coder=dict(
             type='MapNMSFreeCoder',
             post_center_range=[-20, -35, -20, -35, 20, 35, 20, 35],
@@ -375,7 +350,6 @@ model = dict(
             loss_weight=2.0),
         loss_map_pts=dict(type='PtsL1Loss', loss_weight=1.0),
         loss_map_dir=dict(type='PtsDirCosLoss', loss_weight=0.005),
-        ## Planning Loss
         loss_plan_reg_fix_time=dict(type='L1Loss', loss_weight=3.5),
         loss_plan_reg_fix_dist=dict(type='L1Loss', loss_weight=10.0),
         loss_plan_cls=dict(
@@ -384,7 +358,6 @@ model = dict(
             gamma=4.0,
             alpha=0.5,
             loss_weight=20.0)),
-    # model training and testing settings
     train_cfg=dict(pts=dict(
         grid_size=[512, 512, 1],
         voxel_size=voxel_size,
@@ -394,7 +367,7 @@ model = dict(
             type='HungarianAssigner3D',
             cls_cost=dict(type='FocalLossCost', weight=2.0, gamma=2.0, alpha=0.25),
             reg_cost=dict(type='BBox3DL1Cost', weight=0.25),
-            iou_cost=dict(type='IoUCost', weight=0.0), # Fake cost. This is just to make it compatible with DETR head.
+            iou_cost=dict(type='IoUCost', weight=0.0),
             pc_range=point_cloud_range),
         map_assigner=dict(
             type='MapHungarianAssigner3D',
@@ -445,12 +418,11 @@ test_pipeline = [
                'ego_fut_trajs_fix_time', 'ego_fut_masks_fix_time', 'fut_valid_flag_fix_dist',
                'ego_fut_trajs_fix_dist', 'ego_fut_masks_fix_dist', 'ego_fut_cmd', 'ego_lcf_feat', 
                'gt_attr_labels', 'prev_exists', 'index'] + collect_keys)
-
 ]
 
 data = dict(
     samples_per_gpu=batch_size,
-    workers_per_gpu=12,
+    workers_per_gpu=4,  # 降低 worker 数量
     train = dict(
         type = dataset_type,
         data_root=data_root,
@@ -536,11 +508,10 @@ data = dict(
 
 optimizer = dict(
     type='AdamW',
-    lr=1e-4,
+    lr=3e-5,
     weight_decay=1e-2)
 
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
-# learning policy
 lr_config = dict(
     policy='CosineAnnealing',
     warmup='linear',
@@ -561,4 +532,3 @@ find_unused_parameters = True
 checkpoint_config = dict(interval=3000)
 
 custom_hooks = [dict(type='CustomSetEpochInfoHook')]
-

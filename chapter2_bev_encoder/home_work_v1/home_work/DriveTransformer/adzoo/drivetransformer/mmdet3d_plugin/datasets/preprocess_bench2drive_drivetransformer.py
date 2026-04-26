@@ -25,7 +25,7 @@ SPLIT_PATH = '../../../../data/split/bench2drive_base_train_val_split.json'
 DATAROOT = '/root/project/shenlan_e2e/data/bench2drive'
 MAP_ROOT = '/root/project/shenlan_e2e/data/bench2drive/maps'
 OUT_DIR = '/root/project/shenlan_e2e/data/infos'
-SPLIT_PATH = '/root/project/shenlan_e2e/data/split/bench2drive_base_train_val_split.json'
+SPLIT_PATH = '/root/project/shenlan_e2e/data/split/bench2drive_mini_train_val_split.json'
 
 MAX_DISTANCE = 75              # Filter bounding boxes that are too far from the vehicle
 FILTER_Z_SHRESHOLD = 10        # Filter bounding boxes that are too high/low from the vehicle

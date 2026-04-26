@@ -19,8 +19,8 @@
                 "route_timeout": 0.0
             },
             "scores_mean": {
-                "score_composed": 0.0,
-                "score_route": 0.0,
+                "score_composed": 1.8,
+                "score_route": 1.8,
                 "score_penalty": 1.0
             },
             "scores_std_dev": {
@@ -30,13 +30,13 @@
             },
             "meta": {
                 "total_length": 117.121,
-                "duration_game": 0.05,
-                "duration_system": 3.004,
+                "duration_game": 0.7,
+                "duration_system": 85.78,
                 "exceptions": [
                     [
                         "RouteScenario_3255_rep0",
                         0,
-                        "Failed - Agent crashed"
+                        "Failed"
                     ]
                 ]
             }
@@ -51,8 +51,8 @@
                 "route_id": "RouteScenario_3255_rep0",
                 "scenario_name": "ParkingCrossingPedestrian_1",
                 "weather_id": "0",
-                "save_name": "RouteScenario_3255_rep0_Town13_ParkingCrossingPedestrian_1_0_04_26_19_31_32",
-                "status": "Failed - Agent crashed",
+                "save_name": "RouteScenario_3255_rep0_Town13_ParkingCrossingPedestrian_1_0_04_26_22_05_24",
+                "status": "Failed",
                 "num_infractions": 0,
                 "infractions": {
                     "collisions_layout": [],
@@ -69,14 +69,14 @@
                     "route_timeout": []
                 },
                 "scores": {
-                    "score_route": 0,
+                    "score_route": 1.8,
                     "score_penalty": 1.0,
-                    "score_composed": 0.0
+                    "score_composed": 1.8
                 },
                 "meta": {
                     "route_length": 117.121,
-                    "duration_game": 0.05,
-                    "duration_system": 3.004
+                    "duration_game": 0.7,
+                    "duration_system": 85.78
                 },
                 "town_name": "Town13"
             }
@@ -97,8 +97,8 @@
         "carla_camera"
     ],
     "values": [
-        "0.0",
-        "0.0",
+        "1.8",
+        "1.8",
         "1.0",
         "0.0",
         "0.0",

@@ -563,6 +563,31 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
         if len(self.step_time_avg)==20:
             # print("Model Avg Step Time:", np.mean(self.step_time_avg))
             self.step_time_avg.pop(0)
+        
+        # Debug: 打印模型输出结构
+        if self.step == 0 or self.step == 10:
+            print(f"\n=== [Step {self.step}] 模型输出调试信息 ===")
+            if len(output_data_batch) > 0:
+                print(f"  output_data_batch[0] keys: {output_data_batch[0].keys()}")
+                if 'pts_bbox' in output_data_batch[0]:
+                    print(f"  pts_bbox keys: {output_data_batch[0]['pts_bbox'].keys()}")
+                    if 'boxes_3d' in output_data_batch[0]['pts_bbox']:
+                        boxes = output_data_batch[0]['pts_bbox']['boxes_3d']
+                        print(f"  boxes_3d shape: {boxes.tensor.shape if hasattr(boxes, 'tensor') else boxes.shape}")
+                    if 'scores_3d' in output_data_batch[0]['pts_bbox']:
+                        scores = output_data_batch[0]['pts_bbox']['scores_3d']
+                        print(f"  scores_3d shape: {scores.shape}, max score: {scores.max().item() if scores.numel() > 0 else 'N/A'}")
+                if 'boxes_3d' in output_data_batch[0]:
+                    boxes = output_data_batch[0]['boxes_3d']
+                    print(f"  boxes_3d (direct) shape: {boxes.tensor.shape if hasattr(boxes, 'tensor') else boxes.shape}")
+                    if hasattr(boxes, 'tensor') and boxes.tensor.numel() > 0:
+                        print(f"  boxes_3d center range: x[{boxes.tensor[:,0].min():.1f}, {boxes.tensor[:,0].max():.1f}], y[{boxes.tensor[:,1].min():.1f}, {boxes.tensor[:,1].max():.1f}]")
+                if 'scores_3d' in output_data_batch[0]:
+                    scores = output_data_batch[0]['scores_3d']
+                    print(f"  scores_3d (direct) shape: {scores.shape}")
+                    if scores.numel() > 0:
+                        print(f"  scores_3d range: {scores.min().item():.3f} - {scores.max().item():.3f}")
+            print(f"===\n")
         all_out_truck = None
         ego_traj_cls_scores = None
         selected_mode = 0 
