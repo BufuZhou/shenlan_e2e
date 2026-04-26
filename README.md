@@ -538,6 +538,7 @@ https://drive.google.com/file/d/1wAXFWfjJm0cmP_pmgTkwxTUEs6Zu5j6i/view
 
 https://huggingface.co/rethinklab/Bench2DriveZoo/blob/main/resnet50-19c8e357.pth
 
+# 一定要在conda环境中运行
 conda activate drivetransformer
 
 # 调试用，实际仿真用不到
@@ -552,3 +553,10 @@ ps aux | grep -i carla | grep -v grep
 
 清除carla
 bash /root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/tools/clean_carla.sh
+清理相关carla占用端口
+netstat -tuln | grep -E "30002|50001"
+carla仿真失败，一个很重要的原因就是因为这个。
+
+
+# 下载训练数据
+./download_mini.sh

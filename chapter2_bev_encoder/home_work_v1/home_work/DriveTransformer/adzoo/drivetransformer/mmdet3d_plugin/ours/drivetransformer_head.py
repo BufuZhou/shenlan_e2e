@@ -299,6 +299,8 @@ class DriveTransformerlHead(BaseModule):
         nn.init.xavier_uniform_(self.agent_query)
 
         ###################################################################
+        self.agent_reference_points.requires_grad_(False)
+        self.agent_query.requires_grad_(False)
         
         self.agent_cls_embedding = nn.Sequential(
             nn.Linear(self.num_classes, self.embed_dims),
@@ -521,7 +523,7 @@ class DriveTransformerlHead(BaseModule):
         self.ego_lcf_encoder.apply(self.xavier_uniform_linear)
         self.img_position_encoder.apply(self.xavier_uniform_linear)
         self.apply(self.init_ln)
-        num_grid_per_dim_agent = int(np.sqrt(self.agent_reference_points.shape[0]))
+        num_grid_per_dim_agent = int(np.sqrt(self.agent_reference_points.weight.shape[0]))
         ###################################################################
         # project-1
         # TODO-2 
@@ -540,10 +542,10 @@ class DriveTransformerlHead(BaseModule):
         
         ###################################################################
         with torch.no_grad():
-            self.agent_reference_points[..., 0] = x.flatten()
-            self.agent_reference_points[..., 1] = y.flatten()
-            self.agent_reference_points[..., 2] = 0.0
-        nn.init.constant_(self.agent_query, 0)
+            self.agent_reference_points.weight[..., 0] = x.flatten()
+            self.agent_reference_points.weight[..., 1] = y.flatten()
+            self.agent_reference_points.weight[..., 2] = 0.0
+        nn.init.constant_(self.agent_query.weight, 0)
         
         num_grid_per_dim_map = int(np.sqrt(self.map_reference_points.weight.shape[0]))
         with torch.no_grad():
@@ -592,8 +594,9 @@ class DriveTransformerlHead(BaseModule):
         # map_query = nn.Embedding.weight (N, D) -> (bs, N, D)
         # map_reference_points = nn.Embedding.weight (N, D) -> (bs, N, D)
         # 替换此处代码
-        map_query = self.map_query.weight.unsqueeze(0).repeat(bs, 1, 1).to(dtype)
-        map_reference_points = self.map_reference_points.weight.unsqueeze(0).repeat(bs, 1, 1).to(dtype)
+        map_query = torch.randn(bs, self.map_query.weight.shape[0], self.map_query.weight.shape[1]).to("cuda")
+        map_reference_points = torch.randn(bs, self.map_reference_points.weight.shape[0], \
+                                             self.map_reference_points.weight.shape[1]).to("cuda")
 
         ###################################################################
         ## Temporal Alignment
@@ -647,11 +650,7 @@ class DriveTransformerlHead(BaseModule):
         # ego_traj = cat[ego_lcf_feat, ego_his_trajs, ego_fut_cmd] -> [1, 153]
         # ego_query = self.ego_lcf_encoder(ego_traj)  # [1, 768]
         # 替换此处代码
-        ego_lcf_feat = ego_lcf_feat.squeeze(1) if len(ego_lcf_feat.shape) == 3 else ego_lcf_feat
-        ego_his_trajs = ego_his_trajs.view(bs, -1) if ego_his_trajs is not None else torch.zeros(bs, 0, device=img_feats.device, dtype=img_feats.dtype)
-        ego_fut_cmd = ego_fut_cmd.squeeze(1) if len(ego_fut_cmd.shape) == 3 else ego_fut_cmd
-        ego_traj = torch.cat([ego_lcf_feat, ego_his_trajs, ego_fut_cmd], dim=-1)
-        ego_query = self.ego_lcf_encoder(ego_traj)
+        ego_query = torch.randn(1, self.embed_dims).to("cuda")
 
         ###################################################################
         if len(ego_query.shape) == 2:

@@ -773,7 +773,15 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
         # TODO-9 vis 3d bbox
         # project pts_4d to image2d using lidar2img_rt
         # 替换此处代码
-        pts_2d = pts_4d
+        # 步骤1: 矩阵乘法，将3D点投影到相机坐标系
+        pts_2d_homogeneous = (lidar2img_rt @ pts_4d.T).T  # 形状: (N*8, 4)
+        # 步骤2: 齐次坐标归一化，除以深度值（第3维）
+        depth = pts_2d_homogeneous[:, 2:3]  # 获取深度值
+        # 避免除以0
+        depth = np.clip(depth, a_min=1e-5, a_max=None)
+        pts_2d = pts_2d_homogeneous[:, :2] / depth  # 归一化得到2D像素坐标
+        # 步骤3: 重新拼接深度信息（用于后续的深度过滤）
+        pts_2d = np.concatenate([pts_2d, pts_2d_homogeneous[:, 2:]], axis=-1)  # 形状: (N*8, 3)
         ################################################
         imgfov_pts_2d = pts_2d[..., :2].reshape(num_bbox, 8, 2)
         depth = pts_2d[..., 2].reshape(num_bbox, 8)

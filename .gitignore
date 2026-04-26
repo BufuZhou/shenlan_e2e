@@ -13,3 +13,6 @@ mmcv.egg-info/
 *.so
 *.dylib
 *.dll
+Bench2Drive-mini
+visualization_results
+*.log

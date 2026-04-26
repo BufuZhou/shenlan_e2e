@@ -69,11 +69,16 @@ def generate_od_json(save_path, output_json):
     # 检查是否有检测结果文件
     detections_file = os.path.join(save_path, "detections.json")
     if os.path.exists(detections_file):
-        with open(detections_file, 'r') as f:
-            frame_detections = json.load(f)
-        
-        od_results["frames"] = frame_detections
-        print(f"从 detections.json 加载了 {len(frame_detections)} 帧的检测结果")
+        try:
+            with open(detections_file, 'r') as f:
+                frame_detections = json.load(f)
+            
+            od_results["frames"] = frame_detections
+            print(f"从 detections.json 加载了 {len(frame_detections)} 帧的检测结果")
+        except json.JSONDecodeError as e:
+            print(f"警告: detections.json 解析失败: {e}")
+            print("将创建基础结构")
+            frame_detections = []
     else:
         # 如果没有现成的检测结果，创建一个基础结构
         print("未找到 detections.json，创建基础结构")
@@ -136,6 +141,34 @@ def create_rgb_front_video(save_path, output_dir):
     return output_video
 
 
+def find_scenario_directories(save_path):
+    """
+    查找所有场景目录
+    
+    Args:
+        save_path: 保存路径
+    
+    Returns:
+        list: 场景目录列表
+    """
+    scenario_dirs = []
+    
+    # 检查是否有子目录
+    for item in os.listdir(save_path):
+        item_path = os.path.join(save_path, item)
+        if os.path.isdir(item_path):
+            # 检查是否包含 rgb_front 等子文件夹
+            if os.path.exists(os.path.join(item_path, 'rgb_front')):
+                scenario_dirs.append(item_path)
+    
+    # 如果没有找到子目录，使用 save_path 本身
+    if not scenario_dirs:
+        if os.path.exists(os.path.join(save_path, 'rgb_front')):
+            scenario_dirs.append(save_path)
+    
+    return scenario_dirs
+
+
 def main():
     parser = argparse.ArgumentParser(description='可视化结果后处理')
     parser.add_argument('--save_path', type=str, required=True,
@@ -161,28 +194,64 @@ def main():
     print(f"帧率: {args.fps}")
     print("=" * 60)
     
-    # 1. 生成BEV视角视频
-    print("\n[1/3] 生成BEV视角视频...")
-    bev_video = create_bev_video(args.save_path, args.output_dir)
+    # 查找所有场景目录
+    scenario_dirs = find_scenario_directories(args.save_path)
     
-    # 2. 生成RGB前视视角视频
-    print("\n[2/3] 生成RGB前视视角视频...")
-    rgb_video = create_rgb_front_video(args.save_path, args.output_dir)
+    if not scenario_dirs:
+        print(f"错误: 在 {args.save_path} 中未找到有效的场景目录")
+        return
     
-    # 3. 生成OD感知结果JSON
-    print("\n[3/3] 生成OD感知结果JSON...")
-    output_json = os.path.join(args.output_dir, "od_results.json")
-    generate_od_json(args.save_path, output_json)
+    print(f"找到 {len(scenario_dirs)} 个场景目录")
     
-    # 输出结果摘要
+    # 处理每个场景
+    for scenario_idx, scenario_dir in enumerate(scenario_dirs, 1):
+        scenario_name = os.path.basename(scenario_dir)
+        print(f"\n{'='*60}")
+        print(f"处理场景 {scenario_idx}/{len(scenario_dirs)}: {scenario_name}")
+        print(f"{'='*60}")
+        
+        # 为每个场景创建输出目录
+        scenario_output_dir = os.path.join(args.output_dir, scenario_name)
+        os.makedirs(scenario_output_dir, exist_ok=True)
+        
+        # 1. 生成BEV视角视频
+        print("\n[1/4] 生成BEV俯视图视频...")
+        bev_video = create_bev_video(scenario_dir, scenario_output_dir)
+        
+        # 1.5. 如果 BEV 文件夹为空，尝试合成 BEV 视频
+        if not bev_video:
+            print("  尝试从检测结果合成 BEV 视频...")
+            try:
+                from tools.generate_bev_video import generate_bev_video
+                bev_video = generate_bev_video(scenario_dir, scenario_output_dir, fps=20)
+            except Exception as e:
+                print(f"  ⚠️ BEV 合成失败: {e}")
+        
+        # 2. 生成RGB前视视角视频
+        print("\n[2/4] 生成RGB前视视角视频...")
+        rgb_video = create_rgb_front_video(scenario_dir, scenario_output_dir)
+        
+        # 3. 生成OD感知结果JSON
+        print("\n[3/4] 生成OD感知结果JSON...")
+        output_json = os.path.join(scenario_output_dir, "od_results.json")
+        generate_od_json(scenario_dir, output_json)
+        
+        # 4. 输出当前场景的结果摘要
+        print(f"\n场景 {scenario_name} 处理完成：")
+        if bev_video:
+            print(f"  ✓ BEV俯视图视频: {bev_video}")
+        else:
+            print(f"  ⚠ BEV俯视图视频: 未生成（缺少数据）")
+        if rgb_video:
+            print(f"  ✓ RGB前视视角视频: {rgb_video}")
+        print(f"  ✓ OD感知结果JSON: {output_json}")
+    
+    # 输出总体结果摘要
     print("\n" + "=" * 60)
-    print("处理完成！")
+    print("所有场景处理完成！")
     print("=" * 60)
-    if bev_video:
-        print(f"✓ BEV视角视频: {bev_video}")
-    if rgb_video:
-        print(f"✓ RGB前视视角视频: {rgb_video}")
-    print(f"✓ OD感知结果JSON: {output_json}")
+    print(f"总共处理了 {len(scenario_dirs)} 个场景")
+    print(f"输出目录: {args.output_dir}")
     print("=" * 60)
 
 
