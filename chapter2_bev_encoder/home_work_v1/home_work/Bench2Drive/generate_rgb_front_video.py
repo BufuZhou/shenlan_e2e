@@ -51,7 +51,7 @@ def images_to_video(image_folder, output_video_path, fps=20):
 
 if __name__ == "__main__":
     # 设置输入和输出路径
-    base_path = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/save_path/drivetransformer_bench2drive_dev10_RouteScenario_2091_rep0_Town12_NonSignalizedJunctionLeftTurn_1_5_04_26_22_41_57"
+    base_path = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/visualization_results_quick/drivetransformer_bench2drive_dev10_RouteScenario_2091_rep0_Town12_NonSignalizedJunctionLeftTurn_1_5_04_26_23_50_03"
     rgb_front_folder = os.path.join(base_path, "rgb_front")
     output_video = os.path.join(base_path, "rgb_front_video.mp4")
     

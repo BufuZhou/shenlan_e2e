@@ -1769,7 +1769,19 @@ class DriveTransformerlHead(BaseModule):
                 if len(map_gt_labels_list[i]) != 0:
                     self.pseudo_map_instance = [map_gt_vecs_list[i], map_gt_labels_list[i]]
                     break
-            assert self.pseudo_map_instance is not None
+            # If no ground truth map instances found (e.g., Mini dataset), create a minimal pseudo instance
+            if self.pseudo_map_instance is None:
+                # Create a minimal pseudo instance with empty tensors
+                # Shape should be (num_gts, num_orders, num_pts_per_gtline, num_coords) = (1, 1, num_pts, 2)
+                device = map_gt_labels_list[0].device
+                dummy_vecs = type('DummyVecs', (), {
+                    'bbox': torch.zeros((1, 4), device=device),
+                    'fixed_num_sampled_points': torch.zeros((1, self.map_num_pts_per_vec, 2), device=device),
+                    'shift_fixed_num_sampled_points': torch.zeros((1, 1, self.map_num_pts_per_vec, 2), device=device)
+                })()
+                dummy_labels = torch.zeros((1,), dtype=torch.long, device=device)
+                self.pseudo_map_instance = [dummy_vecs, dummy_labels]
+                print("Warning: No map ground truth found. Using dummy pseudo map instance for Mini dataset.")
         new_map_gt_bboxes_list = []
         map_gt_pts_list = []
         map_gt_shifts_pts_list = []

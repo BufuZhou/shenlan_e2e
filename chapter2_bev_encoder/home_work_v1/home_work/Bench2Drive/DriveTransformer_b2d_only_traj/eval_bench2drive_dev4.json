@@ -1,8 +1,58 @@
 {
     "_checkpoint": {
-        "global_record": {},
+        "global_record": {
+            "index": -1,
+            "route_id": -1,
+            "status": "Failed",
+            "infractions": {
+                "collisions_layout": 0.0,
+                "collisions_pedestrian": 0.0,
+                "collisions_vehicle": 19.458,
+                "red_light": 0.0,
+                "stop_infraction": 0.0,
+                "outside_route_lanes": 0.0,
+                "min_speed_infractions": 233.495,
+                "yield_emergency_vehicle_infractions": 0.0,
+                "scenario_timeouts": 0.0,
+                "route_dev": 0.0,
+                "vehicle_blocked": 0.0,
+                "route_timeout": 0.0
+            },
+            "scores_mean": {
+                "score_composed": 16.4675,
+                "score_route": 32.4675,
+                "score_penalty": 0.84
+            },
+            "scores_std_dev": {
+                "score_composed": 17.849,
+                "score_route": 46.647,
+                "score_penalty": 0.32
+            },
+            "meta": {
+                "total_length": 362.123,
+                "duration_game": 32.7,
+                "duration_system": 1037.037,
+                "exceptions": [
+                    [
+                        "RouteScenario_27494_rep0",
+                        1,
+                        "Failed"
+                    ],
+                    [
+                        "RouteScenario_17569_rep0",
+                        2,
+                        "Failed"
+                    ],
+                    [
+                        "RouteScenario_28198_rep0",
+                        3,
+                        "Failed"
+                    ]
+                ]
+            }
+        },
         "progress": [
-            3,
+            4,
             4
         ],
         "records": [
@@ -136,11 +186,45 @@
                     "duration_system": 153.161
                 },
                 "town_name": "Town12"
+            },
+            {
+                "index": 3,
+                "route_id": "RouteScenario_28198_rep0",
+                "scenario_name": "SignalizedJunctionLeftTurnEnterFlow_1",
+                "weather_id": "3",
+                "save_name": "RouteScenario_28198_rep0_Town15_SignalizedJunctionLeftTurnEnterFlow_1_3_04_26_23_02_09",
+                "status": "Failed",
+                "num_infractions": 0,
+                "infractions": {
+                    "collisions_layout": [],
+                    "collisions_pedestrian": [],
+                    "collisions_vehicle": [],
+                    "red_light": [],
+                    "stop_infraction": [],
+                    "outside_route_lanes": [],
+                    "min_speed_infractions": [],
+                    "yield_emergency_vehicle_infractions": [],
+                    "scenario_timeouts": [],
+                    "route_dev": [],
+                    "vehicle_blocked": [],
+                    "route_timeout": []
+                },
+                "scores": {
+                    "score_route": 0.0,
+                    "score_penalty": 1.0,
+                    "score_composed": 0.0
+                },
+                "meta": {
+                    "route_length": 84.337,
+                    "duration_game": 0.2,
+                    "duration_system": 8.008
+                },
+                "town_name": "Town15"
             }
         ]
     },
-    "entry_status": "Started",
-    "eligible": false,
+    "entry_status": "Finished",
+    "eligible": true,
     "sensors": [
         "carla_camera",
         "carla_camera",
@@ -153,6 +237,38 @@
         "carla_speedometer",
         "carla_camera"
     ],
-    "values": [],
-    "labels": []
+    "values": [
+        "16.4675",
+        "32.4675",
+        "0.84",
+        "0.0",
+        "19.458",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "0.0",
+        "233.495"
+    ],
+    "labels": [
+        "Avg. driving score",
+        "Avg. route completion",
+        "Avg. infraction penalty",
+        "Collisions with pedestrians",
+        "Collisions with vehicles",
+        "Collisions with layout",
+        "Red lights infractions",
+        "Stop sign infractions",
+        "Off-road infractions",
+        "Route deviations",
+        "Route timeouts",
+        "Agent blocked",
+        "Yield emergency vehicles infractions",
+        "Scenario timeouts",
+        "Min speed infractions"
+    ]
 }

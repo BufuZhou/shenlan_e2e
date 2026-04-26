@@ -16,4 +16,5 @@ save_path/
 *.dll
 Bench2Drive-mini
 visualization_results
+visualization_results_quick
 *.log

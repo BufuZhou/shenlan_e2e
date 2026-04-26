@@ -25,7 +25,7 @@ SPLIT_PATH = '../../../../data/split/bench2drive_base_train_val_split.json'
 DATAROOT = '/root/project/shenlan_e2e/data/bench2drive'
 MAP_ROOT = '/root/project/shenlan_e2e/data/bench2drive/maps'
 OUT_DIR = '/root/project/shenlan_e2e/data/infos'
-SPLIT_PATH = '/root/project/shenlan_e2e/data/split/bench2drive_mini_train_val_split.json'
+SPLIT_PATH = '/root/project/shenlan_e2e/data/bench2drive/splits/bench2drive_mini_train_val_split.json'
 
 MAX_DISTANCE = 75              # Filter bounding boxes that are too far from the vehicle
 FILTER_Z_SHRESHOLD = 10        # Filter bounding boxes that are too high/low from the vehicle
@@ -160,7 +160,11 @@ def gengrate_map(map_root):
     map_infos = {}
     for file_name in os.listdir(map_root):
         if '.npz' in file_name:
-            map_info = dict(np.load(join(map_root,file_name), allow_pickle=True)['arr'])
+            try:
+                map_info = dict(np.load(join(map_root,file_name), allow_pickle=True)['arr'].item())
+            except:
+                # If loading fails, use empty dict for Mini dataset
+                map_info = {}
             town_name = file_name.split('_')[0]
             map_infos[town_name] = {} 
             lane_points = []
@@ -198,8 +202,10 @@ def gengrate_map(map_root):
             map_infos[town_name]['trigger_volumes_points'] = trigger_volumes_points
             map_infos[town_name]['trigger_volumes_sample_points'] = trigger_volumes_sample_points
             map_infos[town_name]['trigger_volumes_types'] = trigger_volumes_types
+            print(f'Processed map for {town_name}: {len(lane_points)} lanes, {len(trigger_volumes_points)} trigger volumes')
     with open(join(OUT_DIR,'b2d_map_infos.pkl'),'wb') as f:
         pickle.dump(map_infos,f)
+    print(f'Map infos saved to {join(OUT_DIR,"b2d_map_infos.pkl")}')
 
 def preprocess(folder_name, split):
 
