@@ -530,9 +530,6 @@ class DriveTransformerlHead(BaseModule):
         xs = torch.linspace(self.pc_range[0], self.pc_range[3], steps=num_grid_per_dim_agent)
         ys = torch.linspace(self.pc_range[1], self.pc_range[4], steps=num_grid_per_dim_agent)
         x, y = torch.meshgrid(xs, ys, indexing='xy')
-
-        
-        ###################################################################
         with torch.no_grad():
             self.agent_reference_points.weight[..., 0] = x.flatten()
             self.agent_reference_points.weight[..., 1] = y.flatten()
@@ -579,8 +576,6 @@ class DriveTransformerlHead(BaseModule):
         # agent_reference_points = nn.Embedding.weight (N, D) -> (bs, N, D)
         agent_query = self.agent_query.weight.to(dtype).unsqueeze(0).expand(bs, -1, -1)
         agent_reference_points = self.agent_reference_points.weight.unsqueeze(0).repeat(bs, 1, 1)
-        
-        ###################################################################
         ## Online Mapping
         ###################################################################
         # project-2
@@ -589,8 +584,6 @@ class DriveTransformerlHead(BaseModule):
         # map_reference_points = nn.Embedding.weight (N, D) -> (bs, N, D)
         map_query = self.map_query.weight.unsqueeze(0).expand(bs, -1, -1)        
         map_reference_points = self.map_reference_points.weight.unsqueeze(0).repeat(bs, 1, 1)
-
-        ###################################################################
         ## Temporal Alignment
         agent_query, map_query, \
             agent_temp_memory, map_temp_memory, \
@@ -1902,11 +1895,14 @@ class DriveTransformerlHead(BaseModule):
             scores = preds['scores']
             labels = preds['labels']
             trajs = preds['trajs']
-            trajs = trajs.view(trajs.shape[0], self.fut_mode, -1, 2)
-            yaws = bboxes.yaw
-            for agent_idx in range(trajs.shape[0]):
-                trajs[agent_idx] = self.rotate_agent_trajs_to_ego(bbox_yaw=yaws[agent_idx], trajs=trajs[agent_idx])
-            trajs = trajs.flatten(-2, -1)
+            if trajs.numel() > 0:
+                trajs = trajs.view(trajs.shape[0], self.fut_mode, -1, 2)
+                yaws = bboxes.yaw
+                for agent_idx in range(trajs.shape[0]):
+                    trajs[agent_idx] = self.rotate_agent_trajs_to_ego(bbox_yaw=yaws[agent_idx], trajs=trajs[agent_idx])
+                trajs = trajs.flatten(-2, -1)
+            else:
+                trajs = trajs.view(0, self.fut_mode, 0, 2)
             map_preds = map_preds_dicts[i]
             map_bboxes = map_preds['map_bboxes']
             map_scores = map_preds['map_scores']
