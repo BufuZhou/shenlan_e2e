@@ -696,13 +696,15 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
         if result is not None and len(result) > 0:
             num_detections = len(result[0]['boxes_3d'])
             scores = result[0]['scores_3d'].cpu().numpy()
-            print(f"[Frame {frame}] 检测到 {num_detections} 个目标，分数范围: {scores.min():.3f} - {scores.max():.3f}")
             if num_detections > 0:
+                print(f"[Frame {frame}] 检测到 {num_detections} 个目标，分数范围: {scores.min():.3f} - {scores.max():.3f}")
                 print(f"  分数 >= 0.3 的目标数: {(scores >= 0.3).sum()}")
                 # 打印检测框的中心坐标范围
                 boxes_3d = result[0]['boxes_3d'].tensor.cpu().numpy()
                 centers = boxes_3d[:, :3]  # x, y, z
                 print(f"  检测框中心坐标范围: x[{centers[:,0].min():.1f}, {centers[:,0].max():.1f}], y[{centers[:,1].min():.1f}, {centers[:,1].max():.1f}], z[{centers[:,2].min():.1f}, {centers[:,2].max():.1f}]")
+            else:
+                print(f"[Frame {frame}] 未检测到任何目标")
         
         for cam, img in tick_data['imgs'].items():
             #import pdb; pdb.set_trace()
