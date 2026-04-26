@@ -19,7 +19,7 @@ $PYTHON $PROGRAM \
     --track=SENSORS \
     --checkpoint=DriveTransformer_b2d_only_traj/eval_bench2drive_dev_4.json \
     --agent=leaderboard/team_code/drivetransformer_vis_agent.py \
-    --agent-config=DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_tiny.py+DriveTransformer/ckpts/iter_93750.pth \
+    --agent-config=/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_tiny.py+/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/ckpts/iter_93750.pth \
     --debug=0 \
     --record="" \
     --port=30001 \

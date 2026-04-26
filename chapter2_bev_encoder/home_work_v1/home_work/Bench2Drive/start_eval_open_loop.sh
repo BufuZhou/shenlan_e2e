@@ -30,7 +30,7 @@ $PYTHON $PROGRAM \
     --track=SENSORS \
     --checkpoint=DriveTransformer_b2d_open_loop/eval_bench2drive_dev_10_open_loop.json \
     --agent=leaderboard/team_code/drivetransformer_vis_agent_open_loop.py \
-    --agent-config=DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_large.py+DriveTransformer/ckpts/drivetransformer_large.pth \
+    --agent-config=/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_large.py+/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/ckpts/drivetransformer_large.pth \
     --debug=0 \
     --record="" \
     --port=30002 \

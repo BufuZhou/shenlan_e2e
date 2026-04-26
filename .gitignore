@@ -8,6 +8,7 @@ carla/
 build/
 ckpts/
 mmcv.egg-info/
+save_path/
 
 # Compiled extensions
 *.so

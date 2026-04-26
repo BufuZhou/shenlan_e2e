@@ -729,7 +729,7 @@ class DriveTransformerDecoderLayer(BaseModule):
                 # project-3
                 # 允许agent, map, ego互相看
                 # 替换此处代码
-                pass
+                pass  # agent和map的互相可见已在project-2实现，这里只需要ego可以看到所有
                 ###############################################################
                 mask[ego_range, :] = False
                 mask = mask.unsqueeze(0)

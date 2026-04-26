@@ -635,7 +635,20 @@ class DriveTransformerlHead(BaseModule):
         # ego_traj = cat[ego_lcf_feat, ego_his_trajs, ego_fut_cmd] -> [1, 153]
         # ego_query = self.ego_lcf_encoder(ego_traj)  # [1, 768]
         # 替换此处代码
-        ego_query = self.ego_lcf_encoder(torch.cat([ego_lcf_feat.squeeze(1)[..., self.ego_lcf_feat_idx], ego_his_trajs.flatten(-2, -1), ego_fut_cmd.squeeze(1)], dim=-1)) # [B,1,D]
+        # 步骤 1: 维度压缩
+        ego_lcf_feat_squeezed = ego_lcf_feat.squeeze(1)  # [B, 1, 9] -> [B, 9]
+        ego_his_trajs_flattened = ego_his_trajs.flatten(-2, -1)  # [B, 2, 2] -> [B, 4]
+        ego_fut_cmd_squeezed = ego_fut_cmd.squeeze(1)  # [B, 1, 140] -> [B, 140]
+        
+        # 步骤 2: 特征拼接
+        ego_traj = torch.cat([
+            ego_lcf_feat_squeezed[..., self.ego_lcf_feat_idx],  # [B, 9]
+            ego_his_trajs_flattened,  # [B, 4]
+            ego_fut_cmd_squeezed  # [B, 140]
+        ], dim=-1)  # [B, 153]
+        
+        # 步骤 3: 特征编码
+        ego_query = self.ego_lcf_encoder(ego_traj)  # [B, 768]
 
         ###################################################################
         if len(ego_query.shape) == 2:

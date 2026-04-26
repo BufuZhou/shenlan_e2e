@@ -547,6 +547,7 @@ conda activate drivetransformer
 (drivetransformer) root@9gpu-com:~/project/shenlan_e2e# python3 carla_record_video.py
 
 ./chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/start_eval_open_loop_wocontrol.sh
+./chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/start_eval.sh
 
 carla 程序
 ps aux | grep -i carla | grep -v grep

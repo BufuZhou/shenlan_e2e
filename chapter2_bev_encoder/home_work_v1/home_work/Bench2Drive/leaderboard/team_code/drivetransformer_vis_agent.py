@@ -34,7 +34,9 @@ from scipy.interpolate import splprep, splev
 import copy
 import seaborn as sns
 
-os.environ['SAVE_PATH'] = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/save_path"
+# 优先使用环境变量，如果没有则使用默认值
+if 'SAVE_PATH' not in os.environ:
+    os.environ['SAVE_PATH'] = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/save_path"
 os.environ['ROUTES'] = "leaderboard/data/drivetransformer_bench2drive_dev10.xml"
 
 SAVE_PATH = os.environ.get('SAVE_PATH', None)

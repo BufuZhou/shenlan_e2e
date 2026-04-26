@@ -19,7 +19,7 @@ $PYTHON $PROGRAM \
     --track=SENSORS \
     --checkpoint=DriveTransformer_b2d_only_traj/eval_bench2drive_overfit.json \
     --agent=leaderboard/team_code/drivetransformer_vis_agent.py \
-    --agent-config=DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_small_overfit.py+ckpts/iter_15000.pth \
+    --agent-config=/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_small_overfit.py+/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/ckpts/iter_15000.pth \
     --debug=0 \
     --record="" \
     --port=30001 \
