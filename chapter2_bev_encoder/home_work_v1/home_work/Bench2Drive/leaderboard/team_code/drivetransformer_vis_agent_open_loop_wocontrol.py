@@ -107,13 +107,25 @@ class DriveTransformerAgent(autonomous_agent.AutonomousAgent):
                 
         if self.ckpt_path != "None":
             # 使用 map_location='cpu' 先在 CPU 上加载，减少 GPU 显存占用
+            print(f"[Model] 加载权重文件: {self.ckpt_path}")
             ckpt = torch.load(self.ckpt_path, map_location='cpu')
             ckpt = ckpt["state_dict"]
+            print(f"[Model] 权重的 keys 数量: {len(ckpt)}")
             new_state_dict = OrderedDict()
             for key, value in ckpt.items():
-                new_key = key.replace("model.","").replace("._orig_mod", "")
+                new_key = key.replace("model.", "").replace("._orig_mod", "")
                 new_state_dict[new_key] = value
-            print(self.model.load_state_dict(new_state_dict, strict = False))
+                    
+            # 检查权重加载情况
+            load_result = self.model.load_state_dict(new_state_dict, strict=False)
+            print(f"[Model] 权重加载结果:")
+            print(f"  - Missing keys: {len(load_result.missing_keys)}")
+            print(f"  - Unexpected keys: {len(load_result.unexpected_keys)}")
+            if len(load_result.missing_keys) > 0:
+                print(f"  - Missing keys 前5个: {load_result.missing_keys[:5]}")
+            if len(load_result.unexpected_keys) > 0:
+                print(f"  - Unexpected keys 前5个: {load_result.unexpected_keys[:5]}")
+                    
             # 清理不再需要的变量，释放内存
             del ckpt, new_state_dict
             import gc
