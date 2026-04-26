@@ -1,1 +1,1 @@
-/home/slxy/zca/code/drivetransformer_private/run_evaluation_multi_drivetransformer.sh
+/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/run_evaluation_multi_drivetransformer.sh

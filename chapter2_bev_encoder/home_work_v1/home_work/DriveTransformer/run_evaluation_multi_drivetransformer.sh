@@ -1,19 +1,20 @@
-export CARLA_ROOT="/home/slxy/zca/code/drivetransformer_private/carla"
+export CARLA_ROOT="/root/project/shenlan_e2e/carla"
 export CARLA_SERVER=${CARLA_ROOT}/CarlaUE4.sh
 export PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI
 export PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI/carla
 export PYTHONPATH=$PYTHONPATH:$CARLA_ROOT/PythonAPI/carla/dist/carla-0.9.15-py3.7-linux-x86_64.egg
-export PYTHONPATH=$PYTHONPATH:/home/slxy/zca/code/BenchDrive/leaderboard
-export PYTHONPATH=$PYTHONPATH:/home/slxy/zca/code/BenchDrive/leaderboard/team_code
-export PYTHONPATH=$PYTHONPATH:scenario_runner
-export SCENARIO_RUNNER_ROOT=scenario_runner
+export PYTHONPATH=$PYTHONPATH:/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work
+export PYTHONPATH=$PYTHONPATH:/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard
+export PYTHONPATH=$PYTHONPATH:/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard/team_code
+export PYTHONPATH=$PYTHONPATH:/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/scenario_runner
+export SCENARIO_RUNNER_ROOT=/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/scenario_runner
 
 BASE_PORT=30004
 BASE_TM_PORT=50000
 IS_BENCH2DRIVE=True
 BASE_ROUTES=leaderboard/data/bench2drive220
-TEAM_AGENT=/home/slxy/zca/code/BenchDrive/leadboard/team_code/drivetransformer_b2d_agent.py
-TEAM_CONFIG=DriveTransformer/adzoo/drivetransformer/configs/drivetransformer/drivetransformer_large.py+DriveTransformer/ckpts/drivetransformer_large.pth
+TEAM_AGENT=/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard/team_code/drivetransformer_b2d_agent.py
+TEAM_CONFIG=adzoo/drivetransformer/configs/drivetransformer/drivetransformer_large.py+ckpts/drivetransformer_large.pth
 BASE_CHECKPOINT_ENDPOINT=eval_bench2drive220
 PLANNER_TYPE=only_traj
 ALGO=DriveTransformer

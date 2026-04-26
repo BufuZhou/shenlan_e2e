@@ -2,7 +2,7 @@ import os
 import json
 
 root_path = "/data/Bench2Drive/bench2drive-base"
-dest_root = "/home/slxy/zca/temp"
+dest_root = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/temp"
 
 _ANNO = "anno"
 _CAMERA = "camera"

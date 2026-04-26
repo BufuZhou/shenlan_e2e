@@ -1,10 +1,10 @@
 import os
 import json
 
-dev_220 = "/home/slxy/zca/code/Bench2Drive/leaderboard/data/bench2drive220.xml"
+dev_220 = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/leaderboard/data/bench2drive220.xml"
 
-# full_json = "/home/slxy/Downloads/bench2drive_base_1000.json"
-full_json = "/home/slxy/Downloads/bench2drive_full+sup_13638.json"
+# full_json = "/root/Downloads/bench2drive_base_1000.json"
+full_json = "/root/Downloads/bench2drive_full+sup_13638.json"
 
 import xml.etree.ElementTree as ET
 

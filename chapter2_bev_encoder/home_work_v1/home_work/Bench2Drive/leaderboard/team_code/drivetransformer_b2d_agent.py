@@ -17,7 +17,7 @@ from PIL import Image
 from torchvision import transforms as T
 
 import sys
-sys.path.append("/home/slxy/zca/code/Bench2Drive")
+sys.path.append("/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive")
 
 from DriveTransformer.team_code.pid_controller import DecouplePIDController
 from leaderboard.autoagents import autonomous_agent

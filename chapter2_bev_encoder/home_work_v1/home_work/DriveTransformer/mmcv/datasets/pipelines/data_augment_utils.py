@@ -2,18 +2,11 @@
 import numba
 import numpy as np
 import warnings
-
-# 兼容新版 numba
-try:
-    from numba.errors import NumbaPerformanceWarning
-except ImportError:
-    # 新版 numba 已移除该模块，直接使用 warnings
-    NumbaPerformanceWarning = None
+from numba.errors import NumbaPerformanceWarning
 
 from mmcv.core.bbox import box_np_ops
 
-if NumbaPerformanceWarning:
-    warnings.filterwarnings('ignore', category=NumbaPerformanceWarning)
+warnings.filterwarnings('ignore', category=NumbaPerformanceWarning)
 
 
 @numba.njit

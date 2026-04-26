@@ -2,7 +2,7 @@ import os
 
 
 root_path = "/data/Bench2Drive/bench2drive-base"
-dest_ln_base = "/home/slxy/zca/code/drivetransformer_private/data/bench2drive/v1"
+dest_ln_base = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/DriveTransformer/data/bench2drive/v1"
 
 _ANNO = "anno"
 _CAMERA = "camera"

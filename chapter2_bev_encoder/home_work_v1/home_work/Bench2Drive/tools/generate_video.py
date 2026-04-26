@@ -109,7 +109,7 @@ def create_video(images_folder, output_video, fps, font_scale, text_color, text_
     
     video.release()
 
-root = "/home/slxy/zca/code/Bench2Drive/save_path/"
+root = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/save_path/"
 
 case_name = "drivetransformer_bench2drive_dev10_RouteScenario_2091_rep0_Town12_NonSignalizedJunctionLeftTurn_1_5_12_21_20_13_02"
 

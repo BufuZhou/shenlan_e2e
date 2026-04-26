@@ -712,11 +712,10 @@ class DriveTransformerDecoderLayer(BaseModule):
                 # project-1
                 # 允许agent看agent
                 # 替换此处代码
-                mask[agent_range, agent_range] = False
+                pass
                 # 允许map看agent, map
                 # 替换此处代码
-                mask[map_range, agent_range] = False
-                mask[map_range, map_range] = False
+                pass
                 ###############################################################
                 # project-2
                 # 允许agent看agent, map
@@ -926,10 +925,23 @@ class DriveTransformerDecoder(TransformerLayerSequence):
                 # input: map_query + map_pts_pos_embed
                 # map_pts_coord_refine = map_reg_branches[lid](input)  # shape -> map_pts_coord.shape
                 # map_pts_coord = map_pts_coord_refine + map_pts_coord
-                pass
+                map_pts_coord_refine = map_reg_branches[lid](map_query + map_pts_pos_embed)
+                map_pts_coord_refine = map_pts_coord_refine.view(
+                    map_pts_coord.shape[0], 
+                    map_pts_coord.shape[1], 
+                    map_pts_coord.shape[2], 
+                    -1
+                )
+                map_pts_coord = map_pts_coord_refine + map_pts_coord
             else:
                 # map_pts_coord = map_reg_branches[lid](input)  # shape -> map_pts_coord.shape
-                pass
+                map_pts_coord = map_reg_branches[lid](map_query + map_pts_pos_embed)
+                map_pts_coord = map_pts_coord.view(
+                    map_pts_coord.shape[0], 
+                    map_pts_coord.shape[1], 
+                    map_pts_coord.shape[2], 
+                    -1
+                )
             #########################################################################
             _, map_ref  = map_transform_box(map_pts_coord.unsqueeze(0))
             intermediate_map_coords.append(map_pts_coord)
@@ -943,22 +955,37 @@ class DriveTransformerDecoder(TransformerLayerSequence):
                 # project-3
                 # TODO-8 get planning result
                 # 替换此处代码
-                # input = ego_query + ego_pos_embed  # [1, 1, 768]
+                input = ego_query + ego_pos_embed  # [B, N_mode, D]
                 if ego_traj_branches_fix_dist is not None:
                     # 替换此处代码
-                    # ego_traj_ref_fix_dist_refine = ego_traj_branches_fix_dist[lid](input) # shape: [1, 1, 20] -> [1, 1, 20, 1]
-                    # ego_traj_ref_fix_dist = ego_traj_ref_fix_dist_refine + ego_traj_ref_fix_dist
-                    # ego_traj_ref_fix_dist: [1, 1, 20, 1]
-                    pass
+                    ego_traj_ref_fix_dist_refine = ego_traj_branches_fix_dist[lid](input) # [B, N_mode, fut_ts_ego_fix_dist]
+                    ego_traj_ref_fix_dist_refine = ego_traj_ref_fix_dist_refine.unsqueeze(-1) # [B, N_mode, fut_ts_ego_fix_dist, 1]
+                    ego_traj_ref_fix_dist = ego_traj_ref_fix_dist_refine + ego_traj_ref_fix_dist
+                    # ego_traj_ref_fix_dist: [B, N_mode, fut_ts_ego_fix_dist, 1]
+                
                 # 替换此处代码
-                # ego_traj_ref_fix_time_refine = ego_traj_branches_fix_time[lid](input)  # [1, 1, 60] -> [bs, ego_query.shape[1], 30, 2]
-                # ego_traj_ref_fix_time = ego_traj_ref_fix_time_refine + ego_traj_ref_fix_time
-                # ego_traj_ref_fix_time: [1, 1, 30, 2]
+                ego_traj_ref_fix_time_refine = ego_traj_branches_fix_time[lid](input)  # [B, N_mode, fut_ts_ego_fix_time * 2]
+                ego_traj_ref_fix_time_refine = ego_traj_ref_fix_time_refine.view(
+                    bs,
+                    ego_query.shape[1],
+                    -1,
+                    2
+                )  # [B, N_mode, fut_ts_ego_fix_time, 2]
+                ego_traj_ref_fix_time = ego_traj_ref_fix_time_refine + ego_traj_ref_fix_time
+                # ego_traj_ref_fix_time: [B, N_mode, fut_ts_ego_fix_time, 2]
             else:
                 # 替换此处代码
-                # ego_traj_ref_fix_dist = ego_traj_ref_fix_dist_refine
-                # ego_traj_ref_fix_time = ego_traj_ref_fix_time_refine
-                pass
+                input = ego_query + ego_pos_embed
+                ego_traj_ref_fix_dist = ego_traj_branches_fix_dist[lid](input) if ego_traj_branches_fix_dist is not None else None
+                if ego_traj_ref_fix_dist is not None:
+                    ego_traj_ref_fix_dist = ego_traj_ref_fix_dist.unsqueeze(-1)  # [B, N_mode, fut_ts_ego_fix_dist, 1]
+                ego_traj_ref_fix_time = ego_traj_branches_fix_time[lid](input)  # [B, N_mode, fut_ts_ego_fix_time * 2]
+                ego_traj_ref_fix_time = ego_traj_ref_fix_time.view(
+                    bs,
+                    ego_query.shape[1],
+                    -1,
+                    2
+                )  # [B, N_mode, fut_ts_ego_fix_time, 2]
                 ######################################################################
             ego_traj_cls = ego_traj_cls_branches[lid](ego_query + ego_pos_embed) if ego_traj_cls_branches is not None else None
             intermediate_ego_traj_fix_time.append(ego_traj_ref_fix_time)

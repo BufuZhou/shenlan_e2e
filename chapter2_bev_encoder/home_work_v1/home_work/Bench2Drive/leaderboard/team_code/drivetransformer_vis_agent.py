@@ -17,7 +17,7 @@ from PIL import Image
 from torchvision import transforms as T
 
 import sys
-sys.path.append("/home/slxy/zca/backup/Bench2Drive")
+sys.path.append("/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive")
 
 from DriveTransformer.team_code.pid_controller import DecouplePIDController
 from leaderboard.autoagents import autonomous_agent
@@ -34,7 +34,7 @@ from scipy.interpolate import splprep, splev
 import copy
 import seaborn as sns
 
-os.environ['SAVE_PATH'] = "/home/slxy/zca/backup/Bench2Drive/save_path"
+os.environ['SAVE_PATH'] = "/root/project/shenlan_e2e/chapter2_bev_encoder/home_work_v1/home_work/Bench2Drive/save_path"
 os.environ['ROUTES'] = "leaderboard/data/drivetransformer_bench2drive_dev10.xml"
 
 SAVE_PATH = os.environ.get('SAVE_PATH', None)
